@@ -1,0 +1,120 @@
+				//scoreboard//
+
+
+class score_board;
+
+	event OVER;
+
+	static int to_stop;
+	
+	transaction t1;
+	transaction t2;
+	transaction t3;
+
+	mailbox #(transaction) rm2sb;
+	mailbox #(transaction) rdm2sb;
+
+	covergroup count_cov;
+	//	option.per_instance = 1
+		
+		rst : coverpoint t3.reset{
+					  bins zero = {0};
+					  bins one = {1};	
+						}
+		modee : coverpoint t3.mode;
+		loadd : coverpoint t3.load;
+		data_n : coverpoint t3.data { bins zero = {0};
+					  bins one = {1};
+					  bins two = {2};
+					  bins three = {3};
+					  bins four = {4};
+					  bins five = {5};
+					  bins six = {6};
+					  bins seven = {7};
+					  bins eight = {8};
+				  	  bins nine = {9};
+					  bins ten = {10};
+					  bins eleven = {11};
+					  bins tweleve = {12};
+					  bins thirteen = {13}; 	}
+
+		Cout_n : coverpoint t3.cout { bins zero = {0};
+					  bins one = {1};
+					  bins two = {2};
+					  bins three = {3};
+					  bins four = {4};
+					  bins five = {5};
+					  bins six = {6};
+					  bins seven = {7};
+					  bins eight = {8};
+				  	  bins nine = {9};
+					  bins ten = {10};
+					  bins eleven = {11};
+					  bins tweleve = {12};
+					  bins thirteen = {13}; 	}
+
+
+			
+	
+	
+	endgroup
+
+
+	function new (	mailbox #(transaction) rm2sb,
+			mailbox #(transaction) rdm2sb  );
+
+		this.rm2sb = rm2sb;
+		this.rdm2sb = rdm2sb;
+		count_cov = new();
+	
+	endfunction
+
+	
+	virtual task check;
+			$display("t1.count =%0d t2.count = %0d",t1.cout,t2.cout);
+
+			if(t1.cout == t2.cout)
+				begin
+				$display("=========PASSED=======");
+				end
+			
+			else 
+				begin
+			
+				$display("==========FAILED======");
+				end
+	
+			
+			to_stop++;
+			
+			if(to_stop >= 52)
+			->OVER;	
+		
+
+	endtask
+
+	virtual task start;
+		
+		fork
+			begin 
+				forever
+					begin
+						rm2sb.get(t1);
+						rdm2sb.get(t2);	
+						t3 = new t1;
+						count_cov.sample();
+						t2.display("SCORE BOARD");
+						$display("The Checking");
+						$display("The trigger count==%d",to_stop);	
+						check();
+					end
+			end
+		join_none
+		
+	endtask
+		
+endclass
+
+
+		
+
