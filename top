@@ -1,0 +1,52 @@
+				//top module//
+
+module top();
+
+
+  	import pkg::*;   
+
+	reg clock = 0;
+
+
+	counter_if CIF(clock);
+
+	test test_h;
+
+		counter DUT (   .clock(clock),
+			.reset(CIF.reset),
+			.mode(CIF.mode),
+			.load(CIF.load),
+			.data(CIF.data),
+			.cout(CIF.cout)
+						);
+
+	initial 
+		begin
+	
+			forever #5 clock = ~clock;
+
+		end
+	
+		
+
+	initial
+		begin 
+
+			`ifdef VCS
+         		$fsdbDumpvars(0, top);
+        		`endif
+			
+
+			if($test$plusargs("TEST1"))
+				begin
+					test_h = new( CIF, CIF, CIF );
+					test_h.start();
+					#200;
+					$finish;
+				end
+		end
+
+endmodule
+		
+
+
