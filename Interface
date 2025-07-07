@@ -1,0 +1,57 @@
+				//interface//
+
+
+interface counter_if (input bit clock);
+
+	logic reset;
+	logic mode;
+	logic load;
+	logic [3:0] data;
+	logic [3:0] cout;
+	
+
+	clocking wr_drv_cb @(posedge clock);
+		
+	default input #1 output #1;
+			
+		output reset;
+		output mode;
+		output load;
+		output data;
+
+	endclocking
+		
+
+	clocking wr_mon_cb @(posedge clock);
+	
+	default input #1 output #1;
+			
+		input reset;
+		input mode;
+		input load;
+		input data;
+
+	endclocking
+
+	clocking rd_mon_cb @(posedge clock);
+		
+	default input #1 output #1;
+		
+		input cout;
+	
+	endclocking
+
+	modport WR_DRV_MP ( clocking wr_drv_cb );
+
+	modport WR_MON_MP ( clocking wr_mon_cb );
+
+	modport RD_MON_MP ( clocking rd_mon_cb );
+
+
+endinterface
+
+
+		
+
+	
+
