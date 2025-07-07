@@ -1,0 +1,33 @@
+				//transaction//
+		
+class transaction;
+
+	rand logic reset;
+	rand logic mode;
+	rand logic load;
+	randc logic [3:0] data;
+	
+	logic [3:0] cout;
+
+	constraint c1 { reset dist {1:=4,0:=9 };}
+	constraint c2 { load dist { 0:=50 , 1:=40 };}	
+	constraint c3 { data inside {[0:13]};}
+	constraint c4 { mode dist { 0:=30, 1:=50 };}
+	
+	function void display ( input string s);
+		$display("\n=========================================");
+		$display("-------%s------",s);
+		$display("===========================================");
+		$display("	the reset = %0d", reset);
+		$display("	the mode  = %0d", mode);
+		$display("	the load  = %0d", load);
+		$display("	the data  = %0d", data);
+		$display("	the cout  = %0d", cout);
+	
+	endfunction
+
+endclass
+
+		
+		
+
