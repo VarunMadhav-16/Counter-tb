@@ -1,0 +1,80 @@
+				//reference model//
+
+
+class reference_model;
+
+	mailbox #(transaction) wm2rm;
+	mailbox #(transaction) rm2sb;
+
+	transaction t1;
+
+	function new (	mailbox #(transaction) wm2rm,
+			mailbox #(transaction) rm2sb  );
+
+		this.wm2rm = wm2rm;
+		this.rm2sb = rm2sb;
+
+	endfunction
+	
+	virtual task dummy_rtl( ref transaction t1 );
+		
+		  if(t1.reset == 1)
+			begin
+				t1.cout = 4'b0;
+			end
+	
+		else if(t1.load == 1)
+			begin
+				t1.cout = t1.data;
+			end
+
+		else if(t1.cout > 14)
+			begin
+				t1.cout = 4'b0;
+			end
+		else if(t1.cout ==0)
+			begin
+				t1.cout=4'b1101;
+			end
+
+		else if(t1.mode == 1)
+			begin
+				t1.cout = t1.cout + 1;
+			end
+
+
+
+		else
+			begin
+				t1.cout = t1.cout - 1;
+
+			end
+		
+
+	endtask
+
+	virtual task start;
+		
+		fork 
+			begin 
+				forever
+					begin
+						wm2rm.get(t1);
+						
+
+						dummy_rtl(t1);
+					
+
+						rm2sb.put(t1);
+						t1.display("REFERENCE MODEL");
+					end
+			end
+		join_none
+		
+	endtask
+
+endclass
+		
+	
+
+
